@@ -1,0 +1,14 @@
+{
+  "name": "barca-worldcup-schedule-prototype",
+  "version": "1.0.0",
+  "description": "巴萨俱乐部球队资料页世界杯赛程高保真可交互原型",
+  "main": "index.html",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "vite": "^5.2.0"
+  }
+}

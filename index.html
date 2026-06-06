@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>俱乐部球队资料页 - 世界杯赛程高保真原型</title>
+  <!-- 引入 Google Outfit 和 Inter 字体 -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Noto+Sans+SC:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- 桌面端演示时的手机外壳模拟器 -->
+  <div class="phone-container">
+    <div class="phone-notch">
+      <div class="camera"></div>
+      <div class="speaker"></div>
+    </div>
+    <div class="phone-screen">
+      
+      <!-- 状态栏 -->
+      <div class="status-bar">
+        <div class="status-time" id="status-time">15:35</div>
+        <div class="status-icons">
+          <svg class="icon-status" viewBox="0 0 24 24"><path d="M12 3c-4.97 0-9 4.03-9 9 0 2.12.74 4.07 1.97 5.61L4.35 19.4c-.39.39-.39 1.02 0 1.41.39.39 1.02.39 1.41 0l1.9-1.9C9.22 19.58 10.57 20 12 20c4.97 0 9-4.03 9-9s-4.03-9-9-9zm0 15c-3.31 0-6-2.69-6-6s2.69-6 6-6 6 2.69 6 6-2.69 6-6 6z"/></svg>
+          <svg class="icon-status" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
+          <svg class="icon-status" viewBox="0 0 24 24"><path d="M17 5H3a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2zm-1 11H4V8h12v8zm5-7.5l-3 3v1l3 3V8.5z"/></svg>
+        </div>
+      </div>
+
+      <!-- 主视图容器 -->
+      <div class="view-container">
+
+        <!-- ==================== 视图 1: 俱乐部资料页 ==================== -->
+        <div id="view-profile" class="view active">
+          <!-- 俱乐部头部资料卡 -->
+          <div class="club-header">
+            <div class="nav-back-bar">
+              <svg class="icon-back" viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
+              <div class="header-logo-text">直播吧APP</div>
+              <svg class="icon-more" viewBox="0 0 24 24"><path d="M6 10c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm12 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm-6 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>
+            </div>
+            
+            <div class="club-info-container">
+              <div class="club-details">
+                <h1 class="club-name" id="club-name-title">巴塞罗那</h1>
+                <p class="club-english">Barcelona</p>
+                <p class="club-stadium">主场：Spotify 诺坎普球场</p>
+                <div class="club-stats">
+                  <div class="stat-item">
+                    <span class="stat-val">1</span>
+                    <span class="stat-lbl">西甲排名▸</span>
+                  </div>
+                  <div class="stat-item">
+                    <span class="stat-val">11.6<small>亿欧元</small></span>
+                    <span class="stat-lbl">总身价▸</span>
+                  </div>
+                </div>
+              </div>
+              <div class="club-badge-wrapper">
+                <button class="btn-follow">已关注</button>
+                <div class="club-badge">
+                  <!-- 使用巴萨配色的 SVG 矢量队徽，精致高清 -->
+                  <svg viewBox="0 0 100 100" class="badge-svg">
+                    <path d="M10 20 C10 10, 90 10, 90 20 C90 55, 50 95, 50 95 C50 95, 10 55, 10 20 Z" fill="#004D98" stroke="#EEB22E" stroke-width="4"/>
+                    <path d="M10 40 L90 40 L90 44 L10 44 Z" fill="#EEB22E"/>
+                    <path d="M50 40 L50 95" stroke="#EEB22E" stroke-width="4"/>
+                    <!-- 左上：红十字 -->
+                    <rect x="18" y="16" width="24" height="20" fill="#FFF"/>
+                    <rect x="28" y="16" width="4" height="20" fill="#D71A21"/>
+                    <rect x="18" y="24" width="24" height="4" fill="#D71A21"/>
+                    <!-- 右上：黄红条纹 -->
+                    <rect x="58" y="16" width="24" height="20" fill="#EEB22E"/>
+                    <rect x="62" y="16" width="3" height="20" fill="#D71A21"/>
+                    <rect x="69" y="16" width="3" height="20" fill="#D71A21"/>
+                    <rect x="76" y="16" width="3" height="20" fill="#D71A21"/>
+                    <!-- 中间字样: F. C. B. -->
+                    <rect x="14" y="38" width="72" height="10" fill="#FFF" rx="2"/>
+                    <text x="50" y="46" font-family="'Outfit', sans-serif" font-weight="900" font-size="9" fill="#000" text-anchor="middle" letter-spacing="2">FCB</text>
+                    <!-- 下半部分：红蓝竖条 -->
+                    <path d="M12 48 L31 48 L31 71 C24 62, 17 54, 12 48 Z" fill="#A50044"/>
+                    <path d="M31 48 L50 48 L50 90 C42 82, 35 73, 31 71 Z" fill="#004D98"/>
+                    <path d="M50 48 L69 48 L69 71 C65 73, 58 82, 50 90 Z" fill="#A50044"/>
+                    <path d="M69 48 L88 48 L88 48 C83 54, 76 62, 69 71 Z" fill="#004D98"/>
+                    <circle cx="50" cy="68" r="8" fill="#EEB22E"/>
+                    <!-- 简易足球 -->
+                    <circle cx="50" cy="68" r="6" fill="none" stroke="#D71A21" stroke-width="1"/>
+                  </svg>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 导航 Tab 栏 -->
+          <div class="tabs-nav-bar">
+            <div class="tab-item">转会</div>
+            <div class="tab-item">资料</div>
+            <div class="tab-item">数据</div>
+            <div class="tab-item">阵容</div>
+            <div class="tab-item">赛程</div>
+            <div class="tab-item active">动态</div>
+          </div>
+
+          <!-- 动态 Tab 内容列表（可滚动） -->
+          <div class="tab-content scrollable" id="dynamic-news-list">
+            
+            <!-- 新增的世界杯入口 Banner (箭头所指位置) -->
+            <div class="worldcup-entrance-card" id="btn-goto-special">
+              <div class="entrance-bg-effect"></div>
+              <div class="entrance-content">
+                <div class="entrance-badge">2026美加墨世界杯</div>
+                <h3 class="entrance-title">巴塞罗那·世界杯球员名单</h3>
+                <p class="entrance-subtitle">看看俱乐部哪些球星出征？一键查看赛程与对决</p>
+              </div>
+              <div class="entrance-gold-cup">
+                <!-- 大力神杯简化矢量 SVG -->
+                <svg viewBox="0 0 64 64" class="svg-gold-cup">
+                  <path d="M22 10 C22 4, 42 4, 42 10 C42 16, 38 22, 36 28 C42 30, 44 38, 40 44 C36 48, 38 56, 38 58 L26 58 C26 56, 28 48, 24 44 C20 38, 22 30, 28 28 C26 22, 22 16, 22 10 Z" fill="#EEB22E"/>
+                  <ellipse cx="32" cy="10" rx="10" ry="4" fill="#FDD835"/>
+                  <rect x="24" y="58" width="16" height="4" rx="1" fill="#C19A5B"/>
+                  <circle cx="32" cy="22" r="6" fill="#FDD835" opacity="0.8"/>
+                  <path d="M28 34 C28 34, 32 30, 36 34" stroke="#D84315" stroke-width="2" fill="none"/>
+                </svg>
+              </div>
+            </div>
+
+            <!-- 新闻动态列表 (真实直播吧版面还原) -->
+            <div class="news-item">
+              <div class="news-info">
+                <h4 class="news-title">奥尔莫世界杯球星二选一：内马尔姆巴佩选前者，贝利&lt;老马&lt;梅西</h4>
+                <div class="news-meta">
+                  <span class="meta-comment">9评</span>
+                  <span class="meta-time">25分钟前</span>
+                </div>
+              </div>
+              <div class="news-thumb">
+                <div class="news-img-placeholder np-olmo"></div>
+              </div>
+            </div>
+
+            <div class="news-item">
+              <div class="news-info">
+                <h4 class="news-title">尽快调整状态吧！荷兰队在纽约的训练！</h4>
+                <div class="news-meta">
+                  <span class="badge-video">短视频</span>
+                  <span class="meta-comment">5评</span>
+                  <span class="meta-time">2小时前</span>
+                </div>
+              </div>
+              <div class="news-thumb">
+                <div class="news-img-placeholder np-netherlands"></div>
+                <span class="video-duration">03:05</span>
+              </div>
+            </div>
+
+            <div class="news-item">
+              <div class="news-info">
+                <h4 class="news-title">每体：与巴萨作为Spotify公司带来巨大影响，股价已经涨了6倍多</h4>
+                <div class="news-meta">
+                  <span class="meta-comment">1评</span>
+                  <span class="meta-time">28分钟前</span>
+                </div>
+              </div>
+              <div class="news-thumb">
+                <div class="news-img-placeholder np-spotify"></div>
+              </div>
+            </div>
+
+            <div class="news-item">
+              <div class="news-info">
+                <h4 class="news-title">每体：卡萨多希望获得稳定机会，他意识到自己巴萨生涯已接近尾声</h4>
+                <div class="news-meta">
+                  <span class="meta-comment">2评</span>
+                  <span class="meta-time">33分钟前</span>
+                </div>
+              </div>
+              <div class="news-thumb">
+                <div class="news-img-placeholder np-casado"></div>
+              </div>
+            </div>
+
+            <div class="news-item">
+              <div class="news-info">
+                <h4 class="news-title">经典BGM！大罗巴萨时期十佳球！门将的噩梦～</h4>
+                <div class="news-meta">
+                  <span class="badge-video">短视频</span>
+                  <span class="meta-comment">4评</span>
+                  <span class="meta-time">2小时前</span>
+                </div>
+              </div>
+              <div class="news-thumb">
+                <div class="news-img-placeholder np-ronaldo"></div>
+                <span class="video-duration">01:45</span>
+              </div>
+            </div>
+
+            <div class="news-item">
+              <div class="news-info">
+                <h4 class="news-title">奥尔莫：我的未来问题巴萨球迷可以放心 我们有夺欧冠冠军的实力</h4>
+                <div class="news-meta">
+                  <span class="meta-comment">11评</span>
+                  <span class="meta-time">1小时前</span>
+                </div>
+              </div>
+              <div class="news-thumb">
+                <div class="news-img-placeholder np-olmo2"></div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- ==================== 视图 2: 世界杯详情页 ==================== -->
+        <div id="view-worldcup" class="view">
+          
+          <!-- 详情页头部栏 -->
+          <div class="worldcup-header">
+            <div class="wc-nav-bar">
+              <div class="wc-back-circle" id="btn-back-to-profile">
+                <svg class="icon-back-wc" viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z" fill="#FFF"/></svg>
+              </div>
+              <div></div> <!-- 空白占位以保持 Flexbox 两端对齐布局的平衡 -->
+              <div class="wc-share-circle" id="btn-open-poster">
+                <svg class="icon-share-wc" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92c0-1.61-1.31-2.92-2.92-2.92zM18 4c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zM6 13c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zm12 5.02c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1z" fill="#FFF"/></svg>
+              </div>
+            </div>
+            
+            <div class="wc-hero-panel">
+              <div class="wc-hero-left">
+                <div class="wc-title-container">
+                  <span class="wc-year-badge">2026</span>
+                  <h2>巴塞罗那·世界杯球员名单</h2>
+                </div>
+                <p>巴塞罗那共有 <strong class="highlight-gold">12</strong> 位国脚出征本届世界杯，快来查看他们的赛程，为他们应援加油！</p>
+              </div>
+              <div class="wc-hero-right">
+                <div class="gold-cup-glow">
+                  <svg viewBox="0 0 64 64" class="svg-gold-cup-large">
+                    <path d="M22 10 C22 4, 42 4, 42 10 C42 16, 38 22, 36 28 C42 30, 44 38, 40 44 C36 48, 38 56, 38 58 L26 58 C26 56, 28 48, 24 44 C20 38, 22 30, 28 28 C26 22, 22 16, 22 10 Z" fill="#FFD700"/>
+                    <ellipse cx="32" cy="10" rx="10" ry="4" fill="#FFF59D"/>
+                    <rect x="24" y="58" width="16" height="4" rx="1" fill="#B8860B"/>
+                    <circle cx="32" cy="22" r="7" fill="#FFF59D" opacity="0.9"/>
+                    <path d="M28 34 C28 34, 32 30, 36 34" stroke="#FF4500" stroke-width="2.5" fill="none"/>
+                  </svg>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 详情页主内容区（国脚墙与赛程，可滚动） -->
+          <div class="worldcup-content scrollable">
+            
+            <!-- 板块一：巴萨国脚墙 -->
+            <div class="content-section">
+              <div class="section-title-bar">
+                <h3 class="section-title">巴塞罗那·出征国脚墙</h3>
+              </div>
+              
+              <div class="players-wall-grid">
+                <!-- 球员卡片将由 JS 动态生成，支持点击交互 -->
+              </div>
+            </div>
+
+            <!-- 板块二：世界杯赛程表 (沿用已有赛程样式) -->
+            <div class="content-section">
+              <div class="section-title-bar">
+                <h3 class="section-title">世界杯赛程表</h3>
+              </div>
+
+              <!-- 新增：可横向滑动的国家队筛选药丸区 -->
+              <div class="country-filter-scroll-wrapper" id="country-filter-bar">
+                <!-- 按钮由 JS 动态生成并绑定点击筛选事件 -->
+              </div>
+
+              <!-- 赛程列表区域 -->
+              <div class="schedule-timeline" id="schedule-list-container">
+                <!-- 赛程卡片由 JS 根据用户给出的已有样式标准渲染 -->
+              </div>
+            </div>
+          </div>
+          
+          <!-- 固定在底部的按钮区 (已挪至滚动容器外，实现底部固定悬浮) -->
+          <div class="wc-bottom-button-area">
+            <button class="btn-primary-gradient" id="btn-bottom-share">
+              <svg class="icon-btn" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92c0-1.61-1.31-2.92-2.92-2.92z" fill="#FFF"/></svg>
+              生成我的巴萨世界杯见证海报
+            </button>
+          </div>
+        </div>
+
+      </div> <!-- view-container end -->
+
+      <!-- 底部模拟导航条 -->
+      <div class="bottom-tab-bar" id="app-bottom-bar">
+        <div class="b-tab-item active">
+          <svg class="b-tab-icon" viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+          <span>主页</span>
+        </div>
+        <div class="b-tab-item">
+          <svg class="b-tab-icon" viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
+          <span>资讯</span>
+        </div>
+        <div class="b-tab-item-center">
+          <div class="center-badge-btn">
+            <svg class="center-badge-svg" viewBox="0 0 100 100">
+              <path d="M10 20 C10 10, 90 10, 90 20 C90 55, 50 95, 50 95 C50 95, 10 55, 10 20 Z" fill="#004D98" stroke="#EEB22E" stroke-width="4"/>
+              <path d="M10 40 L90 40 L90 44 L10 44 Z" fill="#EEB22E"/>
+              <path d="M50 40 L50 95" stroke="#EEB22E" stroke-width="4"/>
+              <rect x="18" y="16" width="24" height="20" fill="#FFF"/>
+              <rect x="28" y="16" width="4" height="20" fill="#D71A21"/>
+              <rect x="18" y="24" width="24" height="4" fill="#D71A21"/>
+              <rect x="58" y="16" width="24" height="20" fill="#EEB22E"/>
+              <rect x="62" y="16" width="3" height="20" fill="#D71A21"/>
+              <rect x="69" y="16" width="3" height="20" fill="#D71A21"/>
+              <rect x="76" y="16" width="3" height="20" fill="#D71A21"/>
+              <circle cx="50" cy="68" r="8" fill="#EEB22E"/>
+            </svg>
+          </div>
+        </div>
+        <div class="b-tab-item">
+          <svg class="b-tab-icon" viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>
+          <span>社区</span>
+        </div>
+        <div class="b-tab-item">
+          <svg class="b-tab-icon" viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/></svg>
+          <span>数据</span>
+        </div>
+      </div>
+
+      <!-- ==================== 模态框: 海报生成与分享 ==================== -->
+      <div id="poster-share-modal" class="modal-overlay">
+        <div class="poster-popup">
+          <div class="poster-popup-header">
+            <h4>保存与分享海报</h4>
+            <button class="btn-close-modal" id="btn-close-poster-modal">&times;</button>
+          </div>
+          
+          <div class="poster-canvas-container">
+            <!-- 海报生成时的 Loading 动画 -->
+            <div class="poster-loading" id="poster-loader">
+              <div class="spinner"></div>
+              <p>正在为您绘制超清巴萨世界杯海报...</p>
+            </div>
+            <!-- Canvas 渲染完成后转为的 img 标签，方便手机端用户长按保存 -->
+            <img id="generated-poster-img" class="poster-result-img" alt="巴萨世界杯海报">
+            <!-- 隐藏的 Canvas 绘图面板 -->
+            <canvas id="poster-canvas" width="750" height="1080" style="display: none;"></canvas>
+          </div>
+
+          <div class="poster-share-actions">
+            <p class="share-tip">💡 提示：在手机上可长按上方海报直接保存图片</p>
+            <div class="share-buttons-grid">
+              <button class="share-btn sb-wechat" onclick="simulateShare('微信好友')">
+                <span class="share-icon-wrapper">💬</span>
+                <span>微信好友</span>
+              </button>
+              <button class="share-btn sb-moments" onclick="simulateShare('朋友圈')">
+                <span class="share-icon-wrapper">✨</span>
+                <span>朋友圈</span>
+              </button>
+              <button class="share-btn sb-weibo" onclick="simulateShare('新浪微博')">
+                <span class="share-icon-wrapper">🔴</span>
+                <span>新浪微博</span>
+              </button>
+              <button class="share-btn sb-download" id="btn-download-poster">
+                <span class="share-icon-wrapper">⬇️</span>
+                <span>下载海报</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 通用 Toast 提示 -->
+      <div id="toast" class="toast-tip">提示信息</div>
+
+    </div> <!-- phone-screen end -->
+  </div> <!-- phone-container end -->
+
+  <!-- 页面控制与渲染脚本 -->
+  <script src="app.js"></script>
+</body>
+</html>
