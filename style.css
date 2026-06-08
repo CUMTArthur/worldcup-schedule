@@ -1097,7 +1097,7 @@ body {
   padding: 6px 12px;
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
+  align-items: center;
   gap: 4px;
   font-size: 10.5px;
 }
@@ -1105,6 +1105,7 @@ body {
   font-weight: 600;
   color: var(--color-barca-red);
   line-height: 1.35;
+  text-align: center;
 }
 
 /* ==========================================================================

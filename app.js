@@ -323,12 +323,7 @@ function renderScheduleTimeline() {
       card.innerHTML = `
         <!-- 卡片上方时间与阶段 -->
         <div class="card-top-info">
-          <div class="match-time-wrapper">
-            <span class="match-time">${match.time}</span>
-            <span class="status-tag ${match.status === 'finished' ? 'finished' : 'upcoming'}">
-              ${match.status === 'finished' ? '已完赛' : '未开赛'}
-            </span>
-          </div>
+          <span class="match-time">${match.time}</span>
           <span class="match-stage">${match.stage}</span>
         </div>
         
