@@ -1683,17 +1683,33 @@ body {
   border: 1px solid rgba(0, 136, 255, 0.25);
   border-radius: 12px;
   padding: 12px 14px;
-  width: 280px;
+  width: 360px;
+  max-height: 320px; /* 限制最大高度 */
+  overflow-y: auto;  /* 开启纵向滚动条 */
   box-shadow: 0 10px 30px rgba(0, 136, 255, 0.18), 0 4px 12px rgba(0,0,0,0.06);
   z-index: 99999;
-  pointer-events: none;
+  pointer-events: none; /* 默认穿透 */
   opacity: 0;
   transform: translateY(10px) scale(0.95);
   transition: opacity 0.25s cubic-bezier(0.23, 1, 0.32, 1), transform 0.25s cubic-bezier(0.23, 1, 0.32, 1);
 }
+/* 美化悬浮窗滚动条 */
+.prd-popover::-webkit-scrollbar {
+  width: 4px;
+}
+.prd-popover::-webkit-scrollbar-track {
+  background: transparent;
+}
+.prd-popover::-webkit-scrollbar-thumb {
+  background: rgba(0, 136, 255, 0.2);
+  border-radius: 2px;
+}
+.prd-popover::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 136, 255, 0.4);
+}
 .prd-popover.show {
   opacity: 1;
-  pointer-events: auto;
+  pointer-events: auto; /* 显示时允许鼠标进入交互与滚动 */
   transform: translateY(0) scale(1);
 }
 .prd-pop-header {
@@ -1725,12 +1741,13 @@ body {
   padding-bottom: 4px;
 }
 .prd-pop-desc {
-  font-size: 11px;
+  font-size: 12px;
   color: #455A64;
-  line-height: 1.5;
+  line-height: 1.6;
   text-align: left;
 }
 .prd-pop-desc b {
   color: #0D47A1;
   font-weight: 700;
 }
+
