@@ -16,7 +16,7 @@ const BARCA_PLAYERS = [
   { id: 'christensen', name: '克里斯滕森', engName: 'Christensen', num: 15, pos: '后卫', country: '丹麦', flag: '🇩🇰', photo: 'https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?w=150&h=150&fit=crop' }
 ];
 
-// 2026年6月世界杯小组赛首轮赛程数据 (完全沿用已有赛程卡片所需参数)
+// 2026年6月世界杯小组赛首轮赛程数据 (含完赛/比分与未开赛状态)
 const WC_SCHEDULE = [
   {
     id: 'm3',
@@ -29,7 +29,10 @@ const WC_SCHEDULE = [
     flagB: '🇭🇷',
     platform: 'CCTV5',
     hotTip: '斗牛士青年军阻击狂想曲，西班牙巴萨三杰迎来世界杯大考！',
-    barcaStars: ['olmo', 'pedri', 'gavi']
+    barcaStars: ['olmo', 'pedri', 'gavi'],
+    status: 'finished', // 已完赛
+    scoreA: 3,
+    scoreB: 0
   },
   {
     id: 'm6',
@@ -42,7 +45,10 @@ const WC_SCHEDULE = [
     flagB: '🇺🇾',
     platform: 'CCTV5',
     hotTip: '巴萨德比打响！德意志战车碰撞南美坚冰！',
-    barcaStars: ['stegen', 'araujo']
+    barcaStars: ['stegen', 'araujo'],
+    status: 'finished', // 已完赛
+    scoreA: 1,
+    scoreB: 2
   },
   {
     id: 'm_holland',
@@ -55,7 +61,8 @@ const WC_SCHEDULE = [
     flagB: '🇸🇳',
     platform: 'CCTV5',
     hotTip: '德容回归领衔橙衣军团中场，防线铁闸直面非洲雄狮冲击',
-    barcaStars: ['dejong']
+    barcaStars: ['dejong'],
+    status: 'upcoming' // 未开赛
   },
   {
     id: 'm7',
@@ -68,7 +75,8 @@ const WC_SCHEDULE = [
     flagB: '🇵🇱',
     platform: 'CCTV5',
     hotTip: '卫冕热门迎击东欧铁骑，姆巴佩搭档孔德联手合围莱万多夫斯基',
-    barcaStars: ['kounde', 'lewy']
+    barcaStars: ['kounde', 'lewy'],
+    status: 'upcoming' // 未开赛
   },
   {
     id: 'm8',
@@ -81,9 +89,37 @@ const WC_SCHEDULE = [
     flagB: '🇩🇰',
     platform: 'CCTV5',
     hotTip: '桑巴军团揭开神秘面纱，防线领袖克里斯滕森全力盯防拉菲尼亚',
-    barcaStars: ['raphinha', 'christensen']
+    barcaStars: ['raphinha', 'christensen'],
+    status: 'upcoming' // 未开赛
   }
 ];
+
+// 动态计算海报及赛程中的巴萨球星出战文案
+// 只是一边球队有球员：佩德里、加维（西班牙）
+// 两边都有：佩德里、加维（西班牙） VS 阿劳霍（乌拉圭）
+function getBarcaStarsRemark(match) {
+  const starsA = [];
+  const starsB = [];
+  match.barcaStars.forEach(starId => {
+    const player = BARCA_PLAYERS.find(p => p.id === starId);
+    if (player) {
+      if (player.country === match.teamA) {
+        starsA.push(player.name);
+      } else if (player.country === match.teamB) {
+        starsB.push(player.name);
+      }
+    }
+  });
+
+  if (starsA.length > 0 && starsB.length > 0) {
+    return `${starsA.join('、')}（${match.teamA}） VS ${starsB.join('、')}（${match.teamB}）`;
+  } else if (starsA.length > 0) {
+    return `${starsA.join('、')}（${match.teamA}）`;
+  } else if (starsB.length > 0) {
+    return `${starsB.join('、')}（${match.teamB}）`;
+  }
+  return '';
+}
 
 // ==========================================================================
 // 2. 界面视图控制器及交互逻辑
@@ -260,7 +296,12 @@ function renderScheduleTimeline() {
       card.innerHTML = `
         <!-- 卡片上方时间与阶段 -->
         <div class="card-top-info">
-          <span class="match-time">${match.time}</span>
+          <div class="match-time-wrapper">
+            <span class="match-time">${match.time}</span>
+            <span class="status-tag ${match.status === 'finished' ? 'finished' : 'upcoming'}">
+              ${match.status === 'finished' ? '已完赛' : '未开赛'}
+            </span>
+          </div>
           <span class="match-stage">${match.stage}</span>
         </div>
         
@@ -272,7 +313,10 @@ function renderScheduleTimeline() {
           </div>
           
           <div class="vs-center-action">
-            <span style="font-family: var(--font-numeric); font-size: 13px; font-weight: 800; color: #CFD8DC; letter-spacing: 0.5px;">VS</span>
+            ${match.status === 'finished' 
+              ? `<span class="match-score">${match.scoreA} : ${match.scoreB}</span>`
+              : `<span style="font-family: var(--font-numeric); font-size: 13px; font-weight: 800; color: #CFD8DC; letter-spacing: 0.5px;">VS</span>`
+            }
           </div>
           
           <div class="vs-team team-right">
@@ -536,11 +580,12 @@ function drawPosterCanvas() {
       ctx.strokeStyle = 'rgba(255,255,255,0.06)';
       ctx.stroke();
 
-      // 2. 比赛时间及组别
+      // 2. 比赛时间及组别 (加注完赛状态)
       ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
       ctx.font = '400 13px "Noto Sans SC"';
       ctx.textAlign = 'left';
-      ctx.fillText(`${m.date.split(' ')[0]} ${m.time} | ${m.stage.replace('🔥 ', '')}`, 80, itemY + 26);
+      const statusText = m.status === 'finished' ? ' | 已完赛' : ' | 未开赛';
+      ctx.fillText(`${m.date.split(' ')[0]} ${m.time} | ${m.stage.replace('🔥 ', '')}${statusText}`, 80, itemY + 26);
 
       // 3. 对阵双方
       ctx.fillStyle = '#FFFFFF';
@@ -549,11 +594,15 @@ function drawPosterCanvas() {
       ctx.textAlign = 'left';
       ctx.fillText(`${m.flagA} ${m.teamA}`, 80, itemY + 58);
       
-      // VS 标识
+      // VS 标识或比分
       ctx.fillStyle = '#EEB22E';
       ctx.font = 'bold 18px "Outfit"';
       ctx.textAlign = 'center';
-      ctx.fillText('VS', W / 2, itemY + 58);
+      if (m.status === 'finished') {
+        ctx.fillText(`${m.scoreA} : ${m.scoreB}`, W / 2, itemY + 58);
+      } else {
+        ctx.fillText('VS', W / 2, itemY + 58);
+      }
       
       // 战队B
       ctx.fillStyle = '#FFFFFF';
@@ -562,17 +611,11 @@ function drawPosterCanvas() {
       ctx.fillText(`${m.teamB} ${m.flagB}`, W - 80, itemY + 58);
 
       // 4. 为海报上的每场焦点战程备注具体的巴萨球员出战关系
-      ctx.fillStyle = '#EEB22E';
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.85)'; // 颜色调至偏白，使其与背景深红色对比度更高，提高阅读体验
       ctx.font = '500 13px "Noto Sans SC"';
       ctx.textAlign = 'center';
       
-      let relationText = '';
-      if (m.id === 'm3') relationText = '🔵🔴 巴萨出战：奥尔莫、佩德里、加维联袂登场！';
-      if (m.id === 'm6') relationText = '🔵🔴 巴萨德比：特尔施特根 🆚 阿劳霍矛盾交锋！';
-      if (m.id === 'm_holland') relationText = '🔵🔴 巴萨中枢：德容坐镇橙衣军团中场调度！';
-      if (m.id === 'm7') relationText = '🔵🔴 巴萨对决：孔德 🆚 莱万多夫斯基，正面防守对话！';
-      if (m.id === 'm8') relationText = '🔵🔴 巴萨对决：拉菲尼亚 🆚 克里斯滕森，尖刀突破盾牌！';
-      
+      const relationText = getBarcaStarsRemark(m);
       ctx.fillText(relationText, W / 2, itemY + 88);
 
       itemY += 120; // 每一项占 120 像素（108 卡片高 + 12 间距）
