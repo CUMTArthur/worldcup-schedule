@@ -8,9 +8,18 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Noto+Sans+SC:wght@300;400;500;700;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=2026060805">
+  <link rel="stylesheet" href="style.css?v=2026060806">
 </head>
 <body>
+
+  <!-- 交互原型 PRD 审阅对照 -->
+  <div class="control-panel-container">
+    <div class="panel-title">💡 交互原型 PRD 审阅对照</div>
+    <button class="btn-toggle-prd" id="btn-toggle-prd-mode">
+      <span class="icon-prd">📖</span> 开启 PRD 对照模式
+    </button>
+    <div class="panel-desc">开启后原型内核心组件将显示蓝色虚线框，鼠标悬浮至蓝框组件即可显示对应的 PRD 需求细则。</div>
+  </div>
 
   <!-- 桌面端演示时的手机外壳模拟器 -->
   <div class="phone-container">
@@ -107,7 +116,7 @@
           <div class="tab-content scrollable" id="dynamic-news-list">
             
             <!-- 新增的世界杯入口 Banner (箭头所指位置) -->
-            <div class="worldcup-entrance-card" id="btn-goto-special">
+            <div class="worldcup-entrance-card prd-marker" id="btn-goto-special" data-prd-id="entrance">
               <div class="entrance-bg-effect"></div>
               <div class="entrance-content">
                 <div class="entrance-badge">2026美加墨世界杯</div>
@@ -217,7 +226,7 @@
           
           <!-- 详情页头部栏 -->
           <div class="worldcup-header">
-            <div class="wc-nav-bar">
+            <div class="wc-nav-bar prd-marker" data-prd-id="nav">
               <div class="wc-back-circle" id="btn-back-to-profile">
                 <svg class="icon-back-wc" viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z" fill="#FFF"/></svg>
               </div>
@@ -227,7 +236,7 @@
               </div>
             </div>
             
-            <div class="wc-hero-panel">
+            <div class="wc-hero-panel prd-marker" data-prd-id="header">
               <div class="wc-hero-left">
                 <div class="wc-title-container">
                   <span class="wc-year-badge">2026</span>
@@ -258,7 +267,7 @@
                 <h3 class="section-title">俱乐部球员·世界杯出征墙</h3>
               </div>
               
-              <div class="players-wall-grid">
+              <div class="players-wall-grid prd-marker" data-prd-id="players">
                 <!-- 球员卡片将由 JS 动态生成，支持点击交互 -->
               </div>
             </div>
@@ -270,12 +279,12 @@
               </div>
 
               <!-- 新增：可横向滑动的国家队筛选药丸区 -->
-              <div class="country-filter-scroll-wrapper" id="country-filter-bar">
+              <div class="country-filter-scroll-wrapper prd-marker" id="country-filter-bar" data-prd-id="filter">
                 <!-- 按钮由 JS 动态生成并绑定点击筛选事件 -->
               </div>
 
               <!-- 赛程列表区域 -->
-              <div class="schedule-timeline" id="schedule-list-container">
+              <div class="schedule-timeline prd-marker" id="schedule-list-container" data-prd-id="schedule">
                 <!-- 赛程卡片由 JS 根据用户给出的已有样式标准渲染 -->
               </div>
             </div>
@@ -283,7 +292,7 @@
           
           <!-- 固定在底部的按钮区 (已挪至滚动容器外，实现底部固定悬浮) -->
           <div class="wc-bottom-button-area">
-            <button class="btn-primary-gradient" id="btn-bottom-share">
+            <button class="btn-primary-gradient prd-marker" id="btn-bottom-share" data-prd-id="poster">
               <svg class="icon-btn" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92c0-1.61-1.31-2.92-2.92-2.92z" fill="#FFF"/></svg>
               生成我的巴萨世界杯见证海报
             </button>
@@ -344,7 +353,7 @@
               <p>正在为您绘制超清巴萨世界杯海报...</p>
             </div>
             <!-- Canvas 渲染完成后转为的 img 标签，方便手机端用户长按保存 -->
-            <img id="generated-poster-img" class="poster-result-img" alt="巴萨世界杯海报">
+            <img id="generated-poster-img" class="poster-result-img prd-marker" alt="巴萨世界杯海报" data-prd-id="poster">
             <!-- 隐藏的 Canvas 绘图面板 -->
             <canvas id="poster-canvas" width="750" height="1260" style="display: none;"></canvas>
           </div>
@@ -373,6 +382,16 @@
         </div>
       </div>
 
+      <!-- PRD 提示悬浮卡片 -->
+      <div id="prd-tooltip-pop" class="prd-popover">
+        <div class="prd-pop-header">
+          <span class="prd-pop-tag" id="prd-pop-module">页面入口</span>
+          <span class="prd-pop-id" id="prd-pop-num">1.1</span>
+        </div>
+        <h5 class="prd-pop-title" id="prd-pop-title">世界杯名单入口卡片</h5>
+        <p class="prd-pop-desc" id="prd-pop-desc">需求描述...</p>
+      </div>
+
       <!-- 通用 Toast 提示 -->
       <div id="toast" class="toast-tip">提示信息</div>
 
@@ -380,6 +399,6 @@
   </div> <!-- phone-container end -->
 
   <!-- 页面控制与渲染脚本 -->
-  <script src="app.js?v=2026060805"></script>
+  <script src="app.js?v=2026060806"></script>
 </body>
 </html>

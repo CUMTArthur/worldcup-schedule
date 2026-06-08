@@ -146,6 +146,7 @@ document.addEventListener('DOMContentLoaded', () => {
   renderCountryFilterBar();
   renderScheduleTimeline();
   initPosterActions();
+  initPrdMode(); // 新增：PRD对照模式初始化
   
   // 状态栏时间自动刷新
   setInterval(initStatusBarTime, 60000);
@@ -706,4 +707,132 @@ window.simulateShare = function(platform) {
     const posterModal = document.getElementById('poster-share-modal');
     posterModal.classList.remove('active');
   }, 1200);
+}
+
+// ==========================================================================
+// 7. PRD 对照评审模块数据与逻辑 (鼠标移入组件悬浮显示PRD条款)
+// ==========================================================================
+
+const PRD_RULES = {
+  'entrance': {
+    module: '页面入口',
+    num: '1.1 - 1.5',
+    title: '世界杯名单入口卡片',
+    desc: '• <b>展示位置 (1.1)</b>：入口卡片展示在俱乐部资料页「动态」Tab首屏可见的内容流顶部。<br>• <b>展示条件 (1.2)</b>：当该球队有参赛国脚时展示入口。<br>• <b>展示内容 (1.3)</b>：卡片需展示世界杯届次、出征标题、引导文案与大力神杯等视觉符号。<br>• <b>点击行为 (1.5)</b>：点击卡片后侧滑进入世界杯名单详情页，隐藏全局 Tab 底栏。'
+  },
+  'header': {
+    module: '世界杯出征页',
+    num: '2.3',
+    title: '出征头图信息区',
+    desc: '• <b>头图信息展示 (2.3)</b>：展示世界杯届次（2026）、出征标题、俱乐部国脚总人数（如 12 人）、引导文案和世界杯冠军杯视觉符号。<br>• <b>数据口径 (2.3)</b>：国脚数量统计口径需与下方球员墙实际展示数据保持一致。'
+  },
+  'nav': {
+    module: '世界杯出征页',
+    num: '2.2 / 2.16',
+    title: '顶部导航与分享入口',
+    desc: '• <b>顶部导航 (2.2)</b>：左侧圆圈为返回按钮，点击后导航回退并恢复全局底栏；右侧为分享图标，点击直接调起海报生成弹窗。<br>• <b>分享防重复 (2.16)</b>：海报生成期间，重复点击不触发新的生成任务。'
+  },
+  'players': {
+    module: '世界杯出征页',
+    num: '2.4 - 2.5',
+    title: '出征国脚墙',
+    desc: '• <b>国脚墙展示 (2.4)</b>：展示所有国脚的头像、姓名、所属国家国旗、场上位置，默认按国家队分类聚合展示。<br>• <b>球员交互 (2.5)</b>：点击球员卡片，响应整个卡片范围，跳转至直播吧站内对应的球员个人资料页。'
+  },
+  'filter': {
+    module: '世界杯出征页',
+    num: '2.6 - 2.7',
+    title: '横滑国家筛选栏',
+    desc: '• <b>国家筛选展示 (2.6)</b>：横向滑动选择栏，包含「全部」和该俱乐部国脚归属的所有国家队。药丸后缀括号内展示国脚人数（如西班牙（3人）），默认高亮全部。<br>• <b>筛选交互 (2.7)</b>：点击任意国家药丸，下方赛程列表立即联动筛选，仅保留与该国家相关的焦点赛程。'
+  },
+  'schedule': {
+    module: '世界杯出征页',
+    num: '2.8 - 2.9 / 2.15',
+    title: '世界杯焦点赛程表',
+    desc: '• <b>列表展示 (2.8)</b>：按日期分组展示赛程，包含时间、赛事阶段、主客双方队名、国旗和比分/VS。若两侧均有俱乐部球员，以独立双行形式备注出战姓名。<br>• <b>赛程范围 (2.9)</b>：仅展示与当前俱乐部球员所在的国家队相关的焦点比赛。'
+  },
+  'poster': {
+    module: '分享海报',
+    num: '3.1 - 3.10 / 3.14',
+    title: 'Canvas海报生成与分享',
+    desc: '• <b>生成过程 (3.2)</b>：点击生成海报后展示 1 秒 Loading，Canvas 绘制完成后展示最终 PNG 图。<br>• <b>图片规格 (3.6)</b>：输出 750x1260 竖版高清海报，背景使用卡塔尔红至深蓝的高级线性渐变。<br>• <b>文本溢出 (3.14)</b>：海报文本需做防遮挡，对阵下方若有多位球员则双行排布，球员过多自动缩略名字，不缩略球队国籍名。'
+  }
+};
+
+function initPrdMode() {
+  const btnToggle = document.getElementById('btn-toggle-prd-mode');
+  const tooltip = document.getElementById('prd-tooltip-pop');
+  const screen = document.querySelector('.phone-screen');
+  
+  let prdActive = false;
+
+  btnToggle.addEventListener('click', () => {
+    prdActive = !prdActive;
+    if (prdActive) {
+      document.body.classList.add('prd-mode-active');
+      btnToggle.classList.add('active');
+      btnToggle.innerHTML = '<span class="icon-prd">📖</span> 关闭 PRD 对照';
+      showToast('已开启 PRD 对照模式，鼠标悬浮至蓝框组件可查看规则');
+    } else {
+      document.body.classList.remove('prd-mode-active');
+      btnToggle.classList.remove('active');
+      btnToggle.innerHTML = '<span class="icon-prd">📖</span> 开启 PRD 对照';
+      tooltip.classList.remove('show');
+      showToast('已关闭 PRD 对照模式');
+    }
+  });
+
+  // 绑定 marker 悬浮事件
+  document.querySelectorAll('.prd-marker').forEach(marker => {
+    marker.addEventListener('mouseenter', (e) => {
+      if (!prdActive) return;
+      
+      const prdId = marker.getAttribute('data-prd-id');
+      const rule = PRD_RULES[prdId];
+      if (!rule) return;
+
+      // 填充内容
+      document.getElementById('prd-pop-module').textContent = rule.module;
+      document.getElementById('prd-pop-num').textContent = rule.num;
+      document.getElementById('prd-pop-title').textContent = rule.title;
+      document.getElementById('prd-pop-desc').innerHTML = rule.desc;
+
+      // 坐标计算
+      const markerRect = marker.getBoundingClientRect();
+      const screenRect = screen.getBoundingClientRect();
+      
+      // 预估宽度和高度
+      const tooltipW = 280;
+      const tooltipH = tooltip.offsetHeight || 140;
+
+      // 计算相对 phone-screen 容器的坐标
+      let top = markerRect.top - screenRect.top - tooltipH - 8;
+      let left = markerRect.left - screenRect.left + (markerRect.width - tooltipW) / 2;
+
+      // 边界溢出保护，确保 tooltip 100% 露在屏幕内
+      if (top < 10) {
+        top = markerRect.bottom - screenRect.top + 8; // 空间不够移到下方
+      }
+      if (left < 10) {
+        left = 10;
+      }
+      if (left + tooltipW > screenRect.width - 10) {
+        left = screenRect.width - tooltipW - 10;
+      }
+
+      tooltip.style.top = `${top}px`;
+      tooltip.style.left = `${left}px`;
+      tooltip.classList.add('show');
+    });
+
+    marker.addEventListener('mouseleave', () => {
+      tooltip.classList.remove('show');
+    });
+    
+    // 移动端/触屏点击兼容
+    marker.addEventListener('click', (e) => {
+      if (!prdActive) return;
+      // 阻止事件向下传播，防止触发原型卡片的点击跳转
+      e.stopPropagation();
+    });
+  });
 }
