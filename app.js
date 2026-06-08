@@ -94,10 +94,10 @@ const WC_SCHEDULE = [
   }
 ];
 
-// 动态计算海报及赛程中的巴萨球星出战文案
-// 只是一边球队有球员：佩德里、加维（西班牙）
-// 两边都有：佩德里、加维（西班牙） VS 阿劳霍（乌拉圭）
-function getBarcaStarsRemark(match) {
+// 动态计算海报及赛程中的巴萨球星出征备注文案列表
+// 只是一边有球员：['佩德里、加维（西班牙）']
+// 两边都有球员：['佩德里、加维（西班牙）', '阿劳霍（乌拉圭）']
+function getBarcaStarsRemarkList(match) {
   const starsA = [];
   const starsB = [];
   match.barcaStars.forEach(starId => {
@@ -111,14 +111,25 @@ function getBarcaStarsRemark(match) {
     }
   });
 
-  if (starsA.length > 0 && starsB.length > 0) {
-    return `${starsA.join('、')}（${match.teamA}） VS ${starsB.join('、')}（${match.teamB}）`;
-  } else if (starsA.length > 0) {
-    return `${starsA.join('、')}（${match.teamA}）`;
-  } else if (starsB.length > 0) {
-    return `${starsB.join('、')}（${match.teamB}）`;
-  }
-  return '';
+  const list = [];
+  
+  // 格式化单侧球员列表：超出 3 个球员时进行名字缩略，保留完整的国籍名
+  const formatSide = (stars, teamName) => {
+    if (stars.length === 0) return '';
+    let text = stars.join('、');
+    if (stars.length > 3) {
+      text = stars.slice(0, 3).join('、') + '...';
+    }
+    return `${text}（${teamName}）`;
+  };
+
+  const textA = formatSide(starsA, match.teamA);
+  const textB = formatSide(starsB, match.teamB);
+
+  if (textA) list.push(textA);
+  if (textB) list.push(textB);
+
+  return list;
 }
 
 // ==========================================================================
@@ -295,11 +306,19 @@ function renderScheduleTimeline() {
       </div>
     `;
 
-    // 日期下的各个赛程卡片 (极简版，剔除预约按钮、信号源和备注信息，解决列表拉得过长的问题)
+    // 日期下的各个赛程卡片 (极简卡片加入双行国脚出征备注)
     grouped[date].forEach(match => {
       const card = document.createElement('div');
       card.className = 'schedule-card';
       card.setAttribute('id', `card-${match.id}`);
+
+      // 获取当前比赛的球星出征备注文案（双行）
+      const remarkList = getBarcaStarsRemarkList(match);
+      const starsBarHtml = remarkList.length > 0 
+        ? `<div class="card-barca-stars-bar">
+            ${remarkList.map(text => `<div class="stars-desc-text">🔵🔴 ${text}</div>`).join('')}
+           </div>`
+        : '';
 
       card.innerHTML = `
         <!-- 卡片上方时间与阶段 -->
@@ -332,6 +351,9 @@ function renderScheduleTimeline() {
             <span class="team-name">${match.teamB}</span>
           </div>
         </div>
+        
+        <!-- 动态巴萨球星出征备注 -->
+        ${starsBarHtml}
       `;
 
       dateGroup.appendChild(card);
@@ -580,10 +602,10 @@ function drawPosterCanvas() {
     let itemY = scheduleY + 25; // 初始为 560px
 
     barcaMatches.forEach((m) => {
-      // 1. 绘制白透卡片背景 (高度微调为 108 像素，使长图排版更精致)
+      // 1. 绘制白透卡片背景 (高度微调为 114 像素以容纳双行备注)
       ctx.fillStyle = 'rgba(255, 255, 255, 0.08)';
       ctx.beginPath();
-      roundRect(ctx, 60, itemY, W - 120, 108, 10);
+      roundRect(ctx, 60, itemY, W - 120, 114, 10);
       ctx.fill();
       ctx.strokeStyle = 'rgba(255,255,255,0.06)';
       ctx.stroke();
@@ -600,37 +622,42 @@ function drawPosterCanvas() {
       ctx.font = 'bold 18px "Noto Sans SC"';
       // 战队A
       ctx.textAlign = 'left';
-      ctx.fillText(`${m.flagA} ${m.teamA}`, 80, itemY + 58);
+      ctx.fillText(`${m.flagA} ${m.teamA}`, 80, itemY + 56);
       
       // VS 标识或比分
       ctx.fillStyle = '#EEB22E';
       ctx.font = 'bold 18px "Outfit"';
       ctx.textAlign = 'center';
       if (m.status === 'finished') {
-        ctx.fillText(`${m.scoreA} : ${m.scoreB}`, W / 2, itemY + 58);
+        ctx.fillText(`${m.scoreA} : ${m.scoreB}`, W / 2, itemY + 56);
       } else {
-        ctx.fillText('VS', W / 2, itemY + 58);
+        ctx.fillText('VS', W / 2, itemY + 56);
       }
       
       // 战队B
       ctx.fillStyle = '#FFFFFF';
       ctx.font = 'bold 18px "Noto Sans SC"';
       ctx.textAlign = 'right';
-      ctx.fillText(`${m.teamB} ${m.flagB}`, W - 80, itemY + 58);
+      ctx.fillText(`${m.teamB} ${m.flagB}`, W - 80, itemY + 56);
 
-      // 4. 为海报上的每场焦点战程备注具体的巴萨球员出战关系
-      ctx.fillStyle = 'rgba(255, 255, 255, 0.85)'; // 颜色调至偏白，使其与背景深红色对比度更高，提高阅读体验
+      // 4. 为海报上的每场焦点战程备注具体的巴萨球员出征关系 (支持双行，带超长缩略)
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.85)';
       ctx.font = '500 13px "Noto Sans SC"';
       ctx.textAlign = 'center';
       
-      const relationText = getBarcaStarsRemark(m);
-      ctx.fillText(relationText, W / 2, itemY + 88);
+      const remarkList = getBarcaStarsRemarkList(m);
+      if (remarkList.length === 2) {
+        ctx.fillText(remarkList[0], W / 2, itemY + 80);
+        ctx.fillText(remarkList[1], W / 2, itemY + 98);
+      } else if (remarkList.length === 1) {
+        ctx.fillText(remarkList[0], W / 2, itemY + 88);
+      }
 
-      itemY += 120; // 每一项占 120 像素（108 卡片高 + 12 间距）
+      itemY += 126; // 每一项占 126 像素（114 卡片高 + 12 间距）
     });
 
     // ------------------ Step F: 绘制底栏说明 (放置于海报底部，署名标识) ------------------
-    const footerY = 1175;
+    const footerY = 1195;
     ctx.strokeStyle = 'rgba(238, 178, 46, 0.3)';
     ctx.lineWidth = 1;
     ctx.beginPath();

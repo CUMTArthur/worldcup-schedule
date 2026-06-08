@@ -1094,18 +1094,17 @@ body {
 .card-barca-stars-bar {
   background: #FFF;
   border-top: 1px dashed #E0E0E0;
-  padding: 5px 12px;
+  padding: 6px 12px;
   display: flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 10px;
-}
-.barca-shield-mini {
-  font-size: 11px;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  font-size: 10.5px;
 }
 .stars-desc-text {
   font-weight: 600;
-  color: #7A0A26;
+  color: var(--color-barca-red);
+  line-height: 1.35;
 }
 
 /* ==========================================================================
