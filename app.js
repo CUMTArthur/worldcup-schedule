@@ -492,7 +492,7 @@ function drawPosterCanvas() {
     ctx.fillStyle = '#EEB22E';
     ctx.font = 'bold 22px "Noto Sans SC"';
     ctx.textAlign = 'left';
-    ctx.fillText('🏆 俱乐部世界杯出征墙', 60, 215);
+    ctx.fillText('🏆 俱乐部球员·世界杯出征墙', 60, 215);
 
     const cols = 4;
     const startX = 95; // 结合球星圆半径 35 像素计算
@@ -573,7 +573,7 @@ function drawPosterCanvas() {
     ctx.fillStyle = '#EEB22E';
     ctx.font = 'bold 22px "Noto Sans SC"';
     ctx.textAlign = 'left';
-    ctx.fillText('📅 俱乐部球员·世界杯焦点赛程', 60, scheduleY);
+    ctx.fillText('📅 俱乐部球员·世界杯赛程', 60, scheduleY);
 
     // 渲染全部 5 场焦点赛程（由于海报无法筛选，直接全量呈现并带上备注）
     const barcaMatches = WC_SCHEDULE.filter(m => m.barcaStars.length > 0);
