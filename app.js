@@ -188,15 +188,23 @@ function renderCountryFilterBar() {
   
   const countries = [
     { key: 'all', name: '全部', flag: '🌍', desc: '' },
-    { key: '西班牙', name: '西班牙', flag: '🇪🇸', desc: '佩德里、加维、奥尔莫' },
-    { key: '荷兰', name: '荷兰', flag: '🇳🇱', desc: '德容' },
-    { key: '德国', name: '德国', flag: '🇩🇪', desc: '特尔施特根' },
-    { key: '法国', name: '法国', flag: '🇫🇷', desc: '孔德' },
-    { key: '波兰', name: '波兰', flag: '🇵🇱', desc: '莱万' },
-    { key: '巴西', name: '巴西', flag: '🇧🇷', desc: '拉菲尼亚' },
-    { key: '乌拉圭', name: '乌拉圭', flag: '🇺🇾', desc: '阿劳霍' },
-    { key: '丹麦', name: '丹麦', flag: '🇩🇰', desc: '克里斯滕森' }
+    { key: '西班牙', name: '西班牙', flag: '🇪🇸' },
+    { key: '荷兰', name: '荷兰', flag: '🇳🇱' },
+    { key: '德国', name: '德国', flag: '🇩🇪' },
+    { key: '法国', name: '法国', flag: '🇫🇷' },
+    { key: '波兰', name: '波兰', flag: '🇵🇱' },
+    { key: '巴西', name: '巴西', flag: '🇧🇷' },
+    { key: '乌拉圭', name: '乌拉圭', flag: '🇺🇾' },
+    { key: '丹麦', name: '丹麦', flag: '🇩🇰' }
   ];
+
+  // 动态统计每个国家的出征球员人数
+  countries.forEach(c => {
+    if (c.key !== 'all') {
+      const count = BARCA_PLAYERS.filter(p => p.country === c.key).length;
+      c.desc = `${count}人`;
+    }
+  });
   
   bar.innerHTML = '';
   countries.forEach(c => {
