@@ -251,13 +251,11 @@ function renderScheduleTimeline() {
       </div>
     `;
 
-    // 日期下的各个赛程卡片 (完全沿用已有赛程样式，纯净版)
+    // 日期下的各个赛程卡片 (极简版，剔除预约按钮、信号源和备注信息，解决列表拉得过长的问题)
     grouped[date].forEach(match => {
       const card = document.createElement('div');
       card.className = 'schedule-card';
       card.setAttribute('id', `card-${match.id}`);
-
-      const isAlarmSet = localStorage.getItem(`alarm-${match.id}`) === 'true';
 
       card.innerHTML = `
         <!-- 卡片上方时间与阶段 -->
@@ -267,30 +265,20 @@ function renderScheduleTimeline() {
         </div>
         
         <!-- 卡片中间对阵双方 -->
-        <div class="card-match-vs-area">
+        <div class="card-match-vs-area" style="padding: 12px 14px 16px 14px;">
           <div class="vs-team team-left">
             <span class="team-name">${match.teamA}</span>
             <span class="team-flag-emoji">${match.flagA}</span>
           </div>
           
           <div class="vs-center-action">
-            <div class="btn-bell-alarm ${isAlarmSet ? 'alarm-set' : ''}" onclick="toggleAlarm('${match.id}', event)">
-              <svg viewBox="0 0 24 24">
-                <path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.89 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/>
-              </svg>
-            </div>
-            <span class="tv-platform-tag">${match.platform}</span>
+            <span style="font-family: var(--font-numeric); font-size: 13px; font-weight: 800; color: #CFD8DC; letter-spacing: 0.5px;">VS</span>
           </div>
           
           <div class="vs-team team-right">
             <span class="team-flag-emoji">${match.flagB}</span>
             <span class="team-name">${match.teamB}</span>
           </div>
-        </div>
-        
-        <!-- 卡片底部一句话看点 -->
-        <div class="card-bottom-preview">
-          <div class="preview-text">${match.hotTip}</div>
         </div>
       `;
 
@@ -519,7 +507,7 @@ function drawPosterCanvas() {
       ctx.fillText(`${p.country}·${p.pos.slice(0,2)}`, x, y + 80);
     });
 
-    // ------------------ Step E: 绘制赛程卡片 (大模块重构，无杂质) ------------------
+    // ------------------ Step E: 绘制赛程卡片 (增加球员备注，突出俱乐部主题) ------------------
     const scheduleY = 580;
     
     // 分割线
@@ -540,10 +528,10 @@ function drawPosterCanvas() {
     let itemY = scheduleY + 25;
 
     barcaMatches.forEach((m) => {
-      // 1. 绘制纯净白透卡片背景
+      // 1. 绘制白透卡片背景 (高度设为 120 像素以容纳下方球员备注)
       ctx.fillStyle = 'rgba(255, 255, 255, 0.08)';
       ctx.beginPath();
-      roundRect(ctx, 60, itemY, W - 120, 100, 10);
+      roundRect(ctx, 60, itemY, W - 120, 120, 10);
       ctx.fill();
       ctx.strokeStyle = 'rgba(255,255,255,0.06)';
       ctx.stroke();
@@ -554,7 +542,7 @@ function drawPosterCanvas() {
       ctx.textAlign = 'left';
       ctx.fillText(`${m.date.split(' ')[0]} ${m.time} | ${m.stage.replace('🔥 ', '')}`, 80, itemY + 28);
 
-      // 3. 对阵双方 (居中对齐或者合理分列)
+      // 3. 对阵双方
       ctx.fillStyle = '#FFFFFF';
       ctx.font = 'bold 18px "Noto Sans SC"';
       // 战队A
@@ -573,7 +561,21 @@ function drawPosterCanvas() {
       ctx.textAlign = 'right';
       ctx.fillText(`${m.teamB} ${m.flagB}`, W - 80, itemY + 65);
 
-      itemY += 120;
+      // 4. 在海报赛程卡片内为每场比赛加回巴萨国脚参赛备注
+      ctx.fillStyle = '#EEB22E';
+      ctx.font = '500 13px "Noto Sans SC"';
+      ctx.textAlign = 'center';
+      
+      let relationText = '';
+      if (m.id === 'm3') relationText = '🔵🔴 巴萨出战：奥尔莫、佩德里、加维联袂登场！';
+      if (m.id === 'm6') relationText = '🔵🔴 巴萨德比：特尔施特根 🆚 阿劳霍矛盾交锋！';
+      if (m.id === 'm_holland') relationText = '🔵🔴 巴萨中枢：德容坐镇橙衣军团中场调度！';
+      if (m.id === 'm7') relationText = '🔵🔴 巴萨对决：孔德 🆚 莱万多夫斯基，正面防守对话！';
+      if (m.id === 'm8') relationText = '🔵🔴 巴萨对决：拉菲尼亚 🆚 克里斯滕森，尖刀突破盾牌！';
+      
+      ctx.fillText(relationText, W / 2, itemY + 98);
+
+      itemY += 135;
     });
 
     // ------------------ Step F: 绘制底栏说明 (已删除二维码区域，只做署名标识) ------------------
