@@ -378,7 +378,7 @@ function drawPosterCanvas() {
     const ctx = canvas.getContext('2d');
     
     const W = canvas.width;
-    const H = canvas.height; // 已在 HTML 变更为 1080px
+    const H = canvas.height; // 已在 HTML 变更为 1260px
 
     ctx.clearRect(0, 0, W, H);
 
@@ -436,18 +436,17 @@ function drawPosterCanvas() {
     ctx.lineTo(W - 60, 165);
     ctx.stroke();
 
-    // ------------------ Step D: 绘制国脚墙 (下移 + 精确居中对齐) ------------------
+    // ------------------ Step D: 绘制国脚墙 (上移并紧凑排版) ------------------
     ctx.fillStyle = '#EEB22E';
     ctx.font = 'bold 22px "Noto Sans SC"';
     ctx.textAlign = 'left';
     ctx.fillText('🏆 俱乐部世界杯出征墙', 60, 215);
 
     const cols = 4;
-    // 计算左右两侧刚好对齐 60px 和 W-60px
     const startX = 95; // 结合球星圆半径 35 像素计算
-    const startY = 280;
-    const gapX = 187; // 四列的水平分布距离 (60 + c * 187 确保头像中心对称)
-    const gapY = 135;
+    const startY = 260; // 从 280 上移至 260
+    const gapX = 187; // 四列的水平分布距离
+    const gapY = 130; // 间距微调为 130px
 
     const posterPlayers = BARCA_PLAYERS.slice(0, 8);
 
@@ -499,23 +498,23 @@ function drawPosterCanvas() {
       ctx.font = 'bold 16px "Noto Sans SC"';
       ctx.textAlign = 'center';
       ctx.textBaseline = 'alphabetic';
-      ctx.fillText(p.name, x, y + 60);
+      ctx.fillText(p.name, x, y + 55);
 
       // 6. 国家与位置
       ctx.fillStyle = 'rgba(255, 255, 255, 0.6)';
       ctx.font = '12px "Noto Sans SC"';
-      ctx.fillText(`${p.country}·${p.pos.slice(0,2)}`, x, y + 80);
+      ctx.fillText(`${p.country}·${p.pos.slice(0,2)}`, x, y + 75);
     });
 
-    // ------------------ Step E: 绘制赛程卡片 (增加球员备注，突出俱乐部主题) ------------------
-    const scheduleY = 580;
+    // ------------------ Step E: 绘制赛程卡片 (展示全部 5 场，带巴萨球员备注) ------------------
+    const scheduleY = 535; // 从 580 上移至 535
     
     // 分割线
     ctx.strokeStyle = 'rgba(238, 178, 46, 0.3)';
     ctx.lineWidth = 1;
     ctx.beginPath();
-    ctx.moveTo(60, scheduleY - 25);
-    ctx.lineTo(W - 60, scheduleY - 25);
+    ctx.moveTo(60, scheduleY - 30); // 绘制在 505px 处
+    ctx.lineTo(W - 60, scheduleY - 30);
     ctx.stroke();
 
     // 焦点战程标题
@@ -524,14 +523,15 @@ function drawPosterCanvas() {
     ctx.textAlign = 'left';
     ctx.fillText('📅 俱乐部球员·世界杯焦点赛程', 60, scheduleY);
 
-    const barcaMatches = WC_SCHEDULE.filter(m => m.barcaStars.length > 0).slice(0, 3);
-    let itemY = scheduleY + 25;
+    // 渲染全部 5 场焦点赛程（由于海报无法筛选，直接全量呈现并带上备注）
+    const barcaMatches = WC_SCHEDULE.filter(m => m.barcaStars.length > 0);
+    let itemY = scheduleY + 25; // 初始为 560px
 
     barcaMatches.forEach((m) => {
-      // 1. 绘制白透卡片背景 (高度设为 120 像素以容纳下方球员备注)
+      // 1. 绘制白透卡片背景 (高度微调为 108 像素，使长图排版更精致)
       ctx.fillStyle = 'rgba(255, 255, 255, 0.08)';
       ctx.beginPath();
-      roundRect(ctx, 60, itemY, W - 120, 120, 10);
+      roundRect(ctx, 60, itemY, W - 120, 108, 10);
       ctx.fill();
       ctx.strokeStyle = 'rgba(255,255,255,0.06)';
       ctx.stroke();
@@ -540,28 +540,28 @@ function drawPosterCanvas() {
       ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
       ctx.font = '400 13px "Noto Sans SC"';
       ctx.textAlign = 'left';
-      ctx.fillText(`${m.date.split(' ')[0]} ${m.time} | ${m.stage.replace('🔥 ', '')}`, 80, itemY + 28);
+      ctx.fillText(`${m.date.split(' ')[0]} ${m.time} | ${m.stage.replace('🔥 ', '')}`, 80, itemY + 26);
 
       // 3. 对阵双方
       ctx.fillStyle = '#FFFFFF';
       ctx.font = 'bold 18px "Noto Sans SC"';
       // 战队A
       ctx.textAlign = 'left';
-      ctx.fillText(`${m.flagA} ${m.teamA}`, 80, itemY + 65);
+      ctx.fillText(`${m.flagA} ${m.teamA}`, 80, itemY + 58);
       
       // VS 标识
       ctx.fillStyle = '#EEB22E';
       ctx.font = 'bold 18px "Outfit"';
       ctx.textAlign = 'center';
-      ctx.fillText('VS', W / 2, itemY + 65);
+      ctx.fillText('VS', W / 2, itemY + 58);
       
       // 战队B
       ctx.fillStyle = '#FFFFFF';
       ctx.font = 'bold 18px "Noto Sans SC"';
       ctx.textAlign = 'right';
-      ctx.fillText(`${m.teamB} ${m.flagB}`, W - 80, itemY + 65);
+      ctx.fillText(`${m.teamB} ${m.flagB}`, W - 80, itemY + 58);
 
-      // 4. 在海报赛程卡片内为每场比赛加回巴萨国脚参赛备注
+      // 4. 为海报上的每场焦点战程备注具体的巴萨球员出战关系
       ctx.fillStyle = '#EEB22E';
       ctx.font = '500 13px "Noto Sans SC"';
       ctx.textAlign = 'center';
@@ -573,13 +573,13 @@ function drawPosterCanvas() {
       if (m.id === 'm7') relationText = '🔵🔴 巴萨对决：孔德 🆚 莱万多夫斯基，正面防守对话！';
       if (m.id === 'm8') relationText = '🔵🔴 巴萨对决：拉菲尼亚 🆚 克里斯滕森，尖刀突破盾牌！';
       
-      ctx.fillText(relationText, W / 2, itemY + 98);
+      ctx.fillText(relationText, W / 2, itemY + 88);
 
-      itemY += 135;
+      itemY += 120; // 每一项占 120 像素（108 卡片高 + 12 间距）
     });
 
-    // ------------------ Step F: 绘制底栏说明 (已删除二维码区域，只做署名标识) ------------------
-    const footerY = 980;
+    // ------------------ Step F: 绘制底栏说明 (放置于海报底部，署名标识) ------------------
+    const footerY = 1175;
     ctx.strokeStyle = 'rgba(238, 178, 46, 0.3)';
     ctx.lineWidth = 1;
     ctx.beginPath();
@@ -595,6 +595,7 @@ function drawPosterCanvas() {
     resolve(canvas.toDataURL('image/png'));
   });
 }
+
 
 function roundRect(ctx, x, y, width, height, radius) {
   ctx.moveTo(x + radius, y);
